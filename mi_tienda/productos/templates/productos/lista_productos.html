@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Nuestra Tienda</title> 
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        #resultados_busqueda {
+            list-style: none;
+            padding: 0; 
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            width: 300px; 
+            position: absolute;
+            background-color: white;
+            z-index: 1000; 
+        }
+
+        #resultados_busqueda li {
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        #resultados_busqueda li:hover {
+            background-color: #f0f0f0;
+        }
+    </style>
+ 
+</head>
+
+<body>
+    <h1>Personajes a la venta</h1>
+
+    <input type="text" id="campo-busqueda" placeholder="Buscar productos...">
+    <ul id="resultados_busqueda"></ul>
+        
+    <ul>
+        {% for producto in productos %}
+            <li>
+                <a href="{% url 'detalle_producto' producto.id %}">
+                    <img src="{{ producto.imagen.url }}" alt="{{
+                    producto.nombre }}" width="100">
+                    {{ producto.nombre }} - ${{ producto.precio }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>   
+
+    <script>
+        $(document).ready(function() {
+            $('#campo-busqueda').on('input', function() {
+                let terminoBusqueda = $(this).val();   
+
+                if (terminoBusqueda.length >= 2) {
+                    $.ajax({
+                        url: "{% url 'buscar_productos' %}",
+                        data: {'termino': terminoBusqueda},
+                        sucess: function(data) {
+                            let resultadosHtml = '';
+                            if (data.productos.length > 0) {
+                                $.each.(data.productos, function(index,
+                                producto) {
+                                    resultadosHtml += '<li data-id="' +
+                                    producto.id + '">' + producto.nombre + ' - $' + producto.precio + '</li>'; });
+                                } else {
+                                    resultadosHtml += '<li>No se encontraron esos personajes</li>';
+                                }
+                                $('#resultados-busqueda').html(resultadosHtml).show();
+                            }
+                        });
+                } else {
+                    $('#resultados-busqueda').hide();
+                }   
+            });
+            $('#resultados-busqueda').on('click', 'li', function() {
+                let productoId = $(this).data('id');
+                if (productoId) {
+                    window.location.href = "{% url 'detalle_producto' 0 %}".replace('0', productoId);
+
+                }
+            });
+
+            $(document).on("click", function(event) {
+                if (!$(event))
+            })
+        });
+    </script>   
+                }
+                                }))
+                            }
+                        }
+
+</body>
+
+</html>
+
